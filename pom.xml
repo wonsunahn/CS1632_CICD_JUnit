@@ -9,7 +9,7 @@
 
   <name>cs1632-cicd-junit</name>
   <description>An exercise demonstrating CI/CD through github actions.  It uses JUnit for unit testing.</description>
-  <url>http://github.com/wonsunahn/CS1632_CICD_JUnit</url>
+  <url>https://github.com/wonsunahn/CS1632_CICD_JUnit</url>
 
   <licenses>
     <license>
