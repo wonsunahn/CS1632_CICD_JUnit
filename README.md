@@ -19,7 +19,7 @@
 - [Resources](#resources)
 
 # CS 1632 - Software Quality Assurance
-Fall Semester 2022 - Exercise 2
+Fall Semester 2022 - Supplementary Exercise 4
 
 * DUE: TBD
 
