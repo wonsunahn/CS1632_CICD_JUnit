@@ -21,627 +21,268 @@
 # CS 1632 - Software Quality Assurance
 Fall Semester 2022 - Supplementary Exercise 4
 
-* DUE: TBD
-
-**GitHub Classroom Link:** TBD
-
-## Before You Begin
-
-### Install Apache Maven
-
-In this class, we will be using the Apache Maven build framework to build and
-test our code.  Please download the binary zip file from:
-https://maven.apache.org/download.cgi
-
-Unzip the file at your preferred location and add the bin directory to your PATH enviornment variable as instructed in:
-https://maven.apache.org/install.html
-
-### Install VSCode
-
-In this class, we will be using VSCode as our default IDE.  It makes
-collaboration, code sharing, and other tasks much easier.  You may use other
-IDEs if you choose to do so.  All exercises and deliverables are designed so
-that they can be done independent of an IDE.
-
-If you choose to use VSCode, please download and install:
-https://code.visualstudio.com/download
-
-Please also install the "Extension Pack for Java" on VSCode by searching for it on the Extensions menu:
-https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack
-
-If you are working with a partner, you may also want to familiarize yourself with the Live Share feature on VSCode:
-https://code.visualstudio.com/learn/collaboration/live-share
+* DUE: December 2 (Friday), 2022 11:59 PM
 
 ## Description
 
-In this exercise, we will actually build the Rent-A-Cat rental system that we
-discussed in the lecture.  We will complete the implementation under cover of
-unit testing by writing the test infrastructure in concert with the code.
+During the semester, we learned various ways in which we can automate testing.
+But all that automation is of no use if your software organization as a whole
+does not invoke those automated test scripts diligently.  Preferably, those test
+scripts should be run before every single source code change to the repository,
+and for good measure, regularly every night or every weekend just in case.  Now,
+there are many reasons why this does not happen if left to individual
+developers:
 
-For this exercise, you will modify two classes to complete the
-system: **RentACatImpl.java** and **RentACatTest.java**.  The RentACatImpl
-class is an (incomplete) implementation of the Rent-A-Cat system.  The
-RentACatTest class is a JUnit test class that tests RentACatImpl.  All
-locations where you should add code is marked with // TODO comments.
+1. Developers are human beings so they forget.  Or, they remember to run
+   some tests, but not all the test suites that are relevant to the changes
+they have made.
 
-Now the RentACatImpl class is dependent upon the Cat class (same as in the
-example in the lecture), but the developers in charge of the Cat class is
-making slow progress and the class is chock full of bugs.  Nonetheless you are
-asked to write the RentACatTest class to unit test this class independent of
-the Cat class using the techniques we learned in the lecture.
+1. Developers are sometimes on a tight schedule, so they are tempted to skip
+   testing that may delay them, especially if they are not automated.  They
+justify their actions by telling themselves that they will fix the failing
+tests "as soon as possible", or that the test cases are not testing anything
+important, or that failing test cases in modules under the purview of
+another team "is not my problem".
 
-## Running the Program
+In Part 1 of this exercise, we will learn how to build an automated
+"pipeline" of events that get triggered automatically under certain
+conditions (e.g. a source code push).  A pipeline can automate the entire
+process from source code push to software delivery to end users, making sure
+that a suite of tests are invooked as part of the process before software is
+delivered.  Pipelines that are built for this purpose are called CI/CD
+(Continuous Integration / Continuous Delivery) pipelines, because they
+enable continuous delivery of software to the end user at at high velocity
+while still maintaining high quality.  We will learn how to build a fully
+functioning pipeline for the (Rent-A-Cat application)[../exercises/2] that
+we tested for Exercise 2 on our GitHub repository.
 
-Rent-A-Cat rents cats to customers for various needs (mousing, companionship,
-homework help, etc.).  From the main menu, users may:
+In Part 2, we will learn how to use dockers to both test and deploy
+software as part of a CI/CD pipeline.  Dockers are virtualized execution
+environments which can emulate the execution environments in the deployment
+sites (OS, libraries, webservers, databases, etc.) so that software can be
+tested in situ.  In our case, we will create a docker image out of the
+(Rent-A-Cat website)[cs1632.appspot.com] that we tested for Deliverable 3
+for testing and deployment.
 
-1. See list of cats for rent
-2. Rent a cat to a customer
-3. Return a cat
-4. Quit
+## Part 1: CI/CD Pipelines
 
-A cat which is out for rental cannot be rented and will not be listed until it
-has been returned.  We will not charge money for this exercise.
+**GitHub Classroom Link:** TBD
 
-This is an example expected interaction with the program:
+In Part 1, you will learn how to create a pipeline from scratch based on the
+Rent-A-Cat application for Exercise 2, using the CI/CD support provided by
+your GitHub repository through GitHub Actions.  GitHub Actions is just one
+example CI/CD framework.  Other widely used CI/CD frameworks include GitLab
+Pipelines and Jenkins.  Regardless of which you choose, they work in mostly
+similar ways: there is a YAML configuration file that describes actions in
+the pipeline and the actions are performed on one or more Runner machines
+which are typically Docker containers.  The only thing that differs is the
+YAML file syntax.  Hence, by learning GitHub Actions, you will be able to
+translate that knowledge to other frameworks as well.  In GitHub Actions
+lingo, pipelines are called **workflows**, and the two terms will be used
+interchangeably.
 
-```
-Option [1,2,3,4] > 1
-Cats for Rent
-ID 1. Jennyanydots
-ID 2. Old Deuteronomy
-ID 3. Mistoffelees
-Option [1,2,3,4] > 2
-Rent which cat? > 1
-Jennyanydots has been rented.
-Option [1,2,3,4] > 1
-Cats for Rent
-ID 2. Old Deuteronomy
-ID 3. Mistoffelees
-Option [1,2,3,4] > 2
-Rent which cat? > 1
-Sorry, Jennanydots is not here!
-Rent which cat? > 7
-Invalid cat ID.
-Rent which cat? > 3
-Mistoffelees has been rented.
-Option [1,2,3,4] > 1
-Cats for Rent
-ID 2. Old Deuteronomy
-Option [1,2,3,4] > 3
-Return which cat? > 7
-Invalid cat ID.  
-Return which cat? Jennyanydots
-Invalid cat ID.
-Return which cat? 1
-Welcome back, Jennyanydots!
-Option [1,2,3,4] > 1
-Cats for Rent
-ID 1. Jennyanydots
-ID 2. Old Deuteronomy
-Option [1,2,3,4] > 4
-Closing up shop for the day!
-```
+### Add Hello World Workflow
 
-Let's try running the program and observe the output for ourselves.
+Let's first start with a very basic workflow which prints "Hello World"
+inside the Runner.  Click on the "Actions" menu on your GitHub repository
+webpage (it is near the top).  Then click on the "New workflow" button on
+the left hand side.  You will be presented with a plethora of "starter"
+workflows for different purposes.  Search for "manual" in the search box and
+you should see a single workflow named "Manual workflow" by GitHub Actions
+in the search results.  Click on the "Configure" button on the workflow.
+Then click on the "Start commit" button once you are done reviewing the
+workflow and then commit the file.  Note that this creates a workflow YAML
+file ".github/workflows/manual.yml" under your repository.
 
-1. First let's compile the program using the 'compile' phase on Maven:
+Please refer to the following tutorial to see exactly where to click:
+https://docs.github.com/en/actions/using-workflows/using-starter-workflows
 
-   ```
-   mvn compile
-   ```
-
-   If the compilation is successful, all the Java soure codes under src/ are
-compiled to class files under target/classes.
-
-1. Next, invoke the 'exec' phase designating RentACatImpl class:
-
-   ```
-   mvn exec:java 
-   ```
-
-   And then, try listing the cats available for rent:
-
-   ```
-   ...
-   Option [1,2,3,4] > 1
-   Cats for Rent
-   WRITE CODE FOR THISOption [1,2,3,4] >
-   ```
-
-That's not what you expected!  That is because the Rent-A-Cat system is
-incomplete.  It should work as expected after you are done.
-
-## Running Unit Tests
-
-1. First let's see if we can find any bugs by running unit tests by invoking
-   the 'test' phase in Maven:
-
-   ```
-   mvn test
-   ```
-
-   The Maven framework looks for any JUnit test classes under src/test/, and
-invokes them one by one.  You should get a result that looks like this:
-
-   ```
-   ...
-   -------------------------------------------------------
-    T E S T S
-   -------------------------------------------------------
-   Running edu.pitt.cs.RentACatTest
-   Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.116 sec
-
-   Results :
-
-   Tests run: 13, Failures: 0, Errors: 0, Skipped: 0
-
-   [INFO]
-   [INFO] --- jacoco-maven-plugin:0.8.4:report (post-unit-test) @ rentacat ---
-   [INFO] Loading execution data file C:\Users\mrabb\Documents\github\cs1632\CS1632_Fall2022\exercises\2\target\jacoco.exec
-   [INFO] Analyzed bundle 'rentacat' with 5 classes
-   [INFO]
-   [INFO] --- jacoco-maven-plugin:0.8.4:check (check-unit-test) @ rentacat ---
-   [INFO] Loading execution data file C:\Users\mrabb\Documents\github\cs1632\CS1632_Fall2022\exercises\2\target\jacoco.exec
-   [INFO] Analyzed bundle 'rentacat' with 5 classes
-   [WARNING] Rule violated for class edu.pitt.cs.RentACatImpl: instructions covered ratio is 0.02, but expected minimum is 0.20
-   [INFO] ------------------------------------------------------------------------
-   [INFO] BUILD FAILURE
-   [INFO] ------------------------------------------------------------------------
-   [INFO] Total time:  2.986 s
-   [INFO] Finished at: 2022-07-06T22:09:19-04:00
-   [INFO] ------------------------------------------------------------------------
-   ...
-   ```
-
-   Note that out of the 13 unit tests run, 0 tests were failures.  Apparently,
-all tests passed!  So are done?  Far from it!  The reason that there are no
-failures is because all test cases are currently empty.  Pay attention to the
-following line in the output:
-
-   ```
-   [WARNING] Rule violated for class edu.pitt.cs.RentACatImpl: instructions covered ratio is 0.02, but expected minimum is 0.20
-   ```
-
-   It is saying that the test phase expected a minimum of 20% instruction
-coverage for the RentACatImpl class, but the tests achieved only 2%.  Hence
-that is why it says 'BUILD FAILURE' in the end.  We were only able to cover 2%
-exactly becauase all test cases are empty.  You can see for yourself in
-RentACatTest.java under the src/test/ folder that all test cases only have //
-TODO comments in them.
-
-### The POM Maven build configuration
-
-How did Maven know it had to achieve 20% coverage?
-
-Everything about the Maven build and test process is governed by the
-[pom.xml](pom.xml) file which describes the POM (Project Object Model).
-
-We learned that enforcing a uniform set of preconditions is key to reproducible
-testing.  For non-trivial Java projects, those preconditions include external
-packages that the project is dependent upon given in the form of Jar files in
-the case of Java.  Those external packages will be transitively dependent on
-yet other packages and "Jarmageddon" quickly ensues as the dependency tree
-becomes large and complicated. "Jar Hell" follows, where versions of
-dependencies on one system are not equivalent to the versions on another.  
-
-The POM file ensures that the Java runtime version and all dependent package
-versions are uniform across the development / testing / deployment life cycles,
-by making this information explicit in the project file.  For example, the
-[pom.xml](pom.xml) file for this project lists the Mockito and JUnit frameworks
-as dependencies:
+Now let's take a close look at the manual.yml YAML file.  At below are the
+file contents:
 
 ```
-  <dependencies>
+# This is a basic workflow that is manually triggered
 
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>2.0.2-beta</version>
-      <scope>test</scope>
-    </dependency>
+name: Manual workflow
 
+# Controls when the action will run. Workflow runs when manually triggered using the UI or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      name:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Person to greet'
+        # Default value if no value is explicitly provided
+        default: 'World'
+        # Input has to be provided for the workflow to run
+        required: true
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-      <scope>test</scope>
-    </dependency>
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "greet"
+  greet:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
 
-  </dependencies>
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Runs a single command using the runners shell
+    - name: Send greeting
+      run: echo "Hello ${{ github.event.inputs.name }}"
 ```
 
-These dependencies (and all other transitively dependent packages) are
-automatically downloaded from [Maven Central](https://search.maven.org/), and
-stored in a local cache so that they don't have to be downloaded every time.
-You can visit the pages for
-[mockito-all](https://search.maven.org/artifact/org.mockito/mockito-all/2.0.2-beta/jar)
-and [junit](https://search.maven.org/artifact/junit/junit/4.13.2/jar) for
-yourself to download the Jar files manually.
+Please read the comments starting with # carefully.  In essence, a workflow
+is composed of one or more jobs.  Jobs are run on individual Runners (in
+parallel by default).  A job is composed of one or more sequential steps
+which are performed on the same Runner.  The "Manual workflow" is composed
+of a single job named "greet" which is in turn composed of a single step
+"Send greeting".
 
-In addition to dependency management, the POM file allows you to insert
-arbitrary third party plugins during the build process.  In the provided
-[pom.xml](pom.xml) file, you will see the Jacoco plugin:
+Now let's put this workflow into action by executing it on a Runner!  click
+on the "Actions" menu again and you should see a new workflow named "Manual
+workflow" on your lefthand side.  Click on it.  Then click on the "Run
+workflow" button.  You will get a pop up with an option to change "Person to
+greet".  Leave everything as=is and click on the green "Run workflow" button
+again.  After a couple of seconds, you will see a new "Manual workflow" run
+appear on the list of runs with an orange dot and the orange dot will soon
+turn into a green checkmark.  The orange dot indicates that the workflow is
+under execution and the green checkmark indicates that it completed
+successfully.  A failure is indicated by a red crossmark (which we will
+encounter later).  Now click on the "Manual workflow" run link to see the
+details of the run.  You should see a screen that looks like this:
 
-```
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco-maven-plugin.version}</version>
-        ...
-      </plugin>
-    </plugins>
-  </build>
-```
+<img alt="Manual workflow run" src=img/manual_workflow_1.png>
 
-Jacoco is short for the **Ja**va **Co**de **Co**verage tool.  Going back to the
-original question, how did Maven know it had to achieve 20% coverage?  Well,
-the Jacoco plugin was configured as such:
+The screen shows an overview of the workflow.  The workflow is composed of a
+single "greet" job as configured in the YAML file.  The green checkmark
+beside the job indicates success.  Now click on the "greet" job to peek into
+the job and you should see the below screen:
 
+<img alt="Manual workflow greet job" src=img/manual_workflow_2.png>
 
-```
-   ...
-   <configuration>
-     <dataFile>${project.build.directory}/jacoco.exec</dataFile>
-     <rules>
-       <rule>
-	 <element>CLASS</element>
-	 <limits>
-	   <limit>
-	     <counter>INSTRUCTION</counter>
-	     <value>COVEREDRATIO</value>
-	     <minimum>20%</minimum>
-	   </limit>
-	 </limits>
-	 <includes>
-	    <include>edu.pitt.cs.RentACatImpl</include>
-	 </includes>
-       </rule>
-     </rules>
-   </configuration>
-   ...
-```
+As you see, the job is composed of 3 steps: "Set up job", "Send greeting",
+and "Complete job".  The steps "Setup job" and "Complete job" are implicitly
+inserted into every job even though they are not specified in the YAML file.
+I've expanded the first two steps for viewing.  The purpose of "Set up job"
+is to set up the Runner Docker container within which the job is to run.
+You can see that the container was created using the ubuntu-20.04 Docker
+image, and that is because "run-on: ubuntu-latest" was specified on the YAML
+file and 20.04 happened to tbe latest version.  The "Send greeting" step
+runs the commandline specified in the "run:" entry in the YAML file.
 
-You can see that Jacoco was configured to enforce 20% coverage in instruction
-count per class, and the only class that we are interested in is
-edu.pitt.cs.RentACatImpl (since that is the class that we are unit testing).
-The documentation on how to configure like the above is given at:
-https://www.eclemma.org/jacoco/trunk/doc/check-mojo.html
-
-We will talk more about Jacoco later in the [Measuring Code
-Coverage](#measuring-code-coverage) section.
-
-## Using TDD to Complete the Implementation
-
-We will try to apply the Test Driven Development (TDD) model and the
-Red-Green-Refactor (RGR) loop.  Try writing the test case(s) FIRST before
-writing the code for a feature.  This way, you will always have 100% test
-coverage for the code you have written and are writing.  Hence, if you break
-any part of it in the course of adding a feature or refactoring your code, you
-will know immediately.  Otherwise, if you test at the very end, it will be much
-harder to find the defect and fix it.
-
-### Red Phase
-
-This is the phase where you start by writing a test case.  Let's start with the
-first test case in RentACatTest.java: testGetCatNullNumCats0.
-
-Let's start by doing a sanity test to see if the following test will pass by replacing the // TODO comment with this line:
+The reason that we were able to trigger this workflow manually was because
+of the following lines on the YAML file:
 
 ```
-assertTrue(true);
+on:
+  workflow_dispatch:
 ```
 
-And then running the test phase again:
+Typically, workflows are triggered automatically in response to some
+repository event but it is useful to be able to sometimes trigger them
+manually.
+
+Again, refer to the below tutorial if you are confused on where to click:
+https://docs.github.com/en/actions/quickstart
+
+### Add Maven CI Workflow
+
+Now let's get down to business and try writing a CI workflow for our Maven
+project.  This time we are going to have two jobs: 1) A "maven_test" job for
+invoking "mvn test" on our project and 2) A "update_dependence_graph" job
+for updating the package dependence graph in your GitHub repository.  The
+dependence graph is used by a GitHub bot called Dependabot to notify the
+repository owner of packages used by the repository that have become stale
+or have outstanding security vulnerabilities.
+
+Click on the "Actions" menu again and then click on the "New workflow"
+button.  Now, instead of choosing a pre-existing "starter" workflow like
+before, click on the "set up a workflow yourself" link.  This will take you
+to a page for editing ".github/workflows/main.yml" from a blank slate.
+Please change the file name to "maven-ci.yml" instead and then paste the
+following into the content box before commiting the file:
 
 ```
-mvn test
-```
+name: Maven CI
 
-If you see all 13 test cases pass as before, great!  Now let's try an assertion that fails.  Change the above to:
+# Triggers manually or on push or pull request on the main branch
+# (in other words, on a code integration event.)
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
-```
-assertFalse(true);
-```
-
-And then run 'mvn test' again.  You should see one failure:
-
-```
--------------------------------------------------------
- T E S T S
--------------------------------------------------------
-Running edu.pitt.cs.RentACatTest
-Tests run: 13, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.216 sec <<< FAILURE!
-testGetCatNullNumCats0(edu.pitt.cs.RentACatTest)  Time elapsed: 0 sec  <<< FAILURE!
-java.lang.AssertionError
-        at org.junit.Assert.fail(Assert.java:87)
-        at org.junit.Assert.assertTrue(Assert.java:42)
-        at org.junit.Assert.assertTrue(Assert.java:53)
-        at edu.pitt.cs.RentACatTest.testGetCatNullNumCats0(RentACatTest.java:71)
-...
-Results :
-
-Failed tests:   testGetCatNullNumCats0(edu.pitt.cs.RentACatTest)
-
-Tests run: 13, Failures: 1, Errors: 0, Skipped: 0
-...
-```
-
-Now, instead of just doing 'assertFalse(true)', you also have the option of supplying a failure message as the first argument to assertFalse:
-
-```
-assertFalse("True is not false", true);
-```
-
-If you run 'mvn test' again, you will get the failure message on the output:
-
-```
-...
-Failed tests:   testGetCatNullNumCats0(edu.pitt.cs.RentACatTest): True is not false
-...
-```
-
-Every JUnit assertion has an optional first argument where you can supply the
-failure message.  It is a good habit to always supply a failure message which
-describes what failed and why it failed.  That way, the tester is not forced to
-parse the exception stack trace and then read the relevant source code line on
-the JUnit test to try to figure it out.
-
-Now you should be confident enough to start writing the RentACatTest class for
-real.  Start by adding very simple tests to gain confidence.  Next, try adding
-more complex cases towards the bottom of RentACatTest.java that require Cat
-objects.  For that, you will have to modify setUp() to create some Cat objects
-that emulate the correct behavior.  We learned how to do that in the unit
-testing lectures.  If you are still unsure, look at the
-[LinkedListUnitTest.java](https://github.com/wonsunahn/CS1632_Fall2022/blob/main/sample_code/junit_example/LinkedListUnitTest.java)
-sample code.
-
-Some tips you may find useful while writing test cases:
-
-1. Each @Test method represents a test case.  A JUnit class with one or more
-   @Test methods represents a test plan. A JUnit class is usually named after
-whichever class it is testing, with the string `Test` appended to the tested
-class name.  For example, Foo.java would be tested by FooTest.java.  But this
-is not necessarily the case.  A JUnit class may test multiple classes with
-related functionality; in that case, it is typically named after the
-functionality it is testing.
+jobs:
   
-1. Make use of the @Before and @After methods in your JUnit testing.  @Before
-   and @After methods are invoked before and after each @Test method.  They are
-used to set up and tear down test fixtures.  Test fixtures in JUnit are objects
-that need to be created and initialized before performing each test case.  You
-can think of them as "actors" in your test script.  Having the @Before and
-@After allows us to avoid duplicating test fixture code in each test case.
+  # Runs the Maven test phase on the project
+  maven_test:
 
-1. In RentACatTest.java, pay close attention to the Javadoc comments on top of
-   each @Test method which describe the preconditions, execution steps, and
-postconditions.  Remember, part of the preconditions may be already fulfilled
-with the test fixture initialized in the @Before method.
+    runs-on: ubuntu-latest
 
-1. You should use test doubles/mocks for any references to classes other than
-   the one under test that the tested class is dependent upon (i.e. you need to
-mock any Cat objects).  In fact, if you don't mock Cat and use the actual Cat
-objects, your tests will most likely fail.  I have injected artificial defects
-in the form of exceptions into the Cat class to emulate a buggy Cat class.
-Because your tests should work regardless of what's inside Cat.  As to the
-ArrayList class used to store the list of Cats, you do not need to mock it even
-if RentACatImpl is dependent upon it.  ArrayList is a Java standard library
-class so we will assume that it is fully tested and defect-free at this point.
-:)
+    permissions:
+      contents: read
 
-1. Remember to _not_ mock the class under test (i.e. RentACat), only external
-   classes that it depends upon (i.e. Cat).  If you mock RentACat, and then
-test the behavior that you are mocking, what are you testing?  You are testing
-your test code and not your implementation!  In fact, this type of test is
-called a **tautological test** since it will always pass, regardless of whether
-your implementation has a defect or not.
+    steps:
 
-1. The easiest thing to do is assert against a return value, but you can also
-   assert against attributes of an object.  For example:
+    # The uses: keyword invokes a GitHub action:
+    # https://github.com/marketplace/actions/checkout
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-    ```
-    @Test
-    public void testCatName() {
-       assertEquals("Expected name", cat.getName());
-    }
-    ```
-    You can also use the Mockito verify method to perform behavior verification.
+    # This invokes the Setup Java JDK GitHub action:
+    # https://github.com/marketplace/actions/setup-java-jdk
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        cache: maven
 
-### Green Phase
+    - name: Test with Maven
+      run: mvn test
 
-This is where you complete the relevant method in RentACatImpl.java.  There are
-a few methods that have already been filled in, which should pass without
-having to do anything more.  There are also methods with // TODO comments that
-you have to fill in before passing the test cases.
+    # https://github.com/marketplace/actions/upload-a-build-artifact
+    - name: Upload jacoco results as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Jacoco coverage results
+        path: target/site/jacoco
 
-### Refactor Phase
+  # Uploads dependency graph to GitHub to receive Dependabot alerts 
+  update_dependence_graph:
 
-Look for opportunities to streamline your code or make it more readable.  After
-you are done with the refactor phase, all test cases should pass again and you
-should be ready for the next iteration of RGR loop for the next test case.
+    runs-on: ubuntu-latest
 
-## Verifying the Test Cases
+    permissions:
+      contents: read
 
-By now, all test cases should have been implemented and all test cases should
-pass.  You have come full circle!  But wait, does this mean RentACat is
-bug-free?  How do you know if your unit tests themselves had defects and that's
-why they passed, even when RentACat is buggy?  
+    steps:
 
-Let's perform an extra step to verify the unit tests themselves to make sure
-that they themselves are not defective.  One way to verify unit tests is to
-test them on buggy programs to see if they detect the bugs as they are intended
-to.  I have created a buggy version of Rent-A-Cat just for this purpose named
-RentACatBuggy.java.  
-
-In order to apply your unit tests to RentACatBuggy, add the following line to
-the beginning of the @Before setUp() method:
+    # https://github.com/marketplace/actions/maven-dependency-tree-dependency-submission
+    - name: Update dependency graph
+      uses: advanced-security/maven-dependency-submission-action@v2
 
 ```
-Config.setBuggyRentACat(true);
-```
-
-This will ensure that a RentACatBuggy instance is returned when you later do 'r
-= RentACat.createInstance();' in the setUp() method.
-
-Now if you do 'mvn test' once more, you should get output that looks like this:
-
-```
-...
-Failed tests:   testCatAvailableFalseNumCats0(edu.pitt.cs.RentACatTest): No cats but catAvailable(2) returns true
-  testCatAvailableFalseNumCats3(edu.pitt.cs.RentACatTest): 3 cats and cat 2 is rented but catAvailable(2) returns true
-  testCatAvailableTrueNumCats3(edu.pitt.cs.RentACatTest): 3 cats and cat 2 is not rented but catAvailable(2) returns false
-  testCatExistsFalseNumCats0(edu.pitt.cs.RentACatTest): No cats but catExists(2) returns true
-  testCatExistsTrueNumCats3(edu.pitt.cs.RentACatTest): 3 cats but catExists(2) returns false
-  testListCatsNumCats0(edu.pitt.cs.RentACatTest): No cats but listCats() returns non-empty string expected:<[]> but was:<[empty]>
-  testListCatsNumCats3(edu.pitt.cs.RentACatTest): 3 cats and listCats() does not return the expected string expected:<ID 1. Jennyanydots[(..)
-  testRentCatFailureNumCats0(edu.pitt.cs.RentACatTest): No cats but rentCat(2) returns true
-  testRentCatFailureNumCats3(edu.pitt.cs.RentACatTest): 3 cats and cat 2 is rented but rentCat(2) returns true
-  testReturnCatFailureNumCats0(edu.pitt.cs.RentACatTest): No cats but returnCat(2) returns true
-  testReturnCatNumCats3(edu.pitt.cs.RentACatTest): (..)
-
-Tests run: 13, Failures: 11, Errors: 0, Skipped: 0
-...
-```
-
-You can see that all tests fail except the ones for getCat(int id).  That is
-because I've inserted bugs into RentACatBuggy except for that method.  If your
-unit tests pass any other method, it must be defective.  Time to fix your test!
-
-Important: don't forget to revert RentACatTest.java by removing the 'Config.setBuggyRentACat(true);' line when you are satisfied!
-
-## Measuring Code Coverage
-
-Code coverage is a metric that measures what percentage of the code base a
-particular test run covered.  There are several ways to measure code coverage,
-but the most widespread method is to measure the percentage of code lines
-covered.  Typically a code coverage of above 80\% or 90\% is targeted in
-software organizations.  I will require that level of coverage for the
-Deliverable.  Since this is just an exercise, the minimum coverage is set to be
-20%, which you should be able to achieve easily.
-
-Jacoco (**Ja**va **Co**de **Co**verage tool), is one of the most popular code
-coverage measurement tools among Java developers, and that's what we will use
-in this class.  Jacoco has already been integrated into the test phase of our
-Maven project, so you should already have coverage statistics generated from
-your last 'mvn test' run at:
-
-```
-target/site/jacoco/
-```
-
-The statistics are generated XML (jacoco.xml), CSV (jacoco.csv), and HTML
-(index.html) formats.  The XML and CSV formats are designed to be easily
-readable by later stages of the testing pipeline that automatically generate
-reports or send notifications to developers.  The HTML format is meant for
-human cosumption.  Try opening index.html and drill down to the RentACatImpl
-class, which is the class under test which we are interested in measuring code
-coverage for.  If you have implemented all the code, it should look similar to
-the following screenshot:
-
-<img alt="Code Coverage Jacoco" src=code_coverage_jacoco.png width=700>
-
-## Using VSCode
-
-As you can see, all instructions on this README are given based on the
-commandline.  You can use these instructions regardless of what IDE or editor
-you use for coding.  If you decide to use an IDE like VSCode, typically there
-are integrations inside the IDE to build, execute, and test your code.  I will
-demonstrate VSCode integrations in class.
 
 # Submission
 
-Each pairwise group will do one submission to GradeScope as usual.  The
-submitting member must use the "View or edit group" link at the top-right
-corner of the assignment page after submission to add his/her partner.  
+Please complete Part 1 and Part 2 questions in
+[ReportTemplate.docx](ReportTemplate.docx).  These is a [PDF
+version](ReportTemplate.pdf) as well.  
 
-The submission this time is divided into two parts:
-
-1.  Submit the repository created by GitHub Classroom for your team to
-    GradeScope at the **Exercise 2 GitHub** link.  Once you submit, GradeScope
-will run the autograder to grade you and give feedback.  If you get deductions,
-fix your code based on the feedback and resubmit.  Repeat until you don't get
-deductions.
-
-1. Create a screenshot of code coverage stats as shown above.  Make sure you
-   take the screenshot of the correct screen.  After you have created the
-screenshot, save the picture to a PDF file and submit to GradeScope at the
-**Exercise 2 Coverage** link.  Make sure the picture fits in one page for easy
-viewing and grading.
-
-# GradeScope Feedback
-
-The GradeScope autograder works in 3 phases:
-1. RentACatTestSolution.(some method) on RentACatImpl: RentACatTestSolution is the solution implementation of RentACatTest.  The purpose of this phase is to verify that RentACatImpl (your RentACat implementation) does not have any defects.
-1. RentACatTest.(some method) on RentACatSolution: RentACatTest is your submitted JUnit test for RentACat.  The purpose of this phase is to test RentACatTest itself for defects.  RentACatSolution is the solution implementation of RentACat and contains no defects (that I know of).  Hence, all tests in RentACatTest should pass.
-1. RentACatTest.(some method) on RentACatBuggy: RentACatTest is your submitted JUnit test for RentACat and you are testing against the buggy RentACatBuggy implementation.  The purpose of this phase is to further test RentACatTest for defects.  It does this by testing whether RentACatTest finds all the bugs that RentACatTestSolution is able to find within RentACatBuggy.
-If you see test failures, read the feedback given by the autograder, fix your code, and retry.
-
-Beside the feedback given by the autograder, the TA or myself will leave more detailed feedback on the "Feedback on source code" question.  We will also check your code coverage screenshot submission and give feedback.
+Wnen you are done, submit to the "Supplementary Exercise 4 Report" link on
+GradeScope.  I want each member in the group to have gone through the
+exercise on his/her/their own before submitting.
 
 # Groupwork Plan
 
-There are two files needing modification: RentACatTest.java and
-RentACatImpl.java.  One way you can divide up the work is like the following:
-
-[RentACatTest.java]
-
-* Partner 1:
-  * setUp
-  * testCatAvailableFalseNumCats0
-  * testCatAvailableFalseNumCats3
-  * testCatAvailableTrueNumCats3
-  * testCatExistsFalseNumCats0
-  * testCatExistsTrueNumCats3
-  * testReturnCatFailureNumCats0
-  * testReturnCatNumCats3
-* Partner 2:
-  * setUp
-  * testGetCatNullNumCats0
-  * testGetCatNumCats3
-  * testListCatsNumCats0
-  * testListCatsNumCats3
-  * testRentCatFailureNumCats0
-  * testRentCatFailureNumCats3
-
-[RentACatImpl.java]
-
-* Partner 1:
-  * catExists
-  * returnCat
-* Partner 2:
-  * listCats
-  * rentCat
-
-Notice that the setUp method is repeated for both partners.  Both of you will
-have to implement parts of the setUp method to have your assigned tests
-working.  To avoid merge conflicts on GitHub while working on the same file, I
-suggest that you use the Live Share feature in VSCode to work on the same
-shared copy of code, when you are working concurrently in real time (as in the
-classroom).  After you are done with the coding session, don't forget to commit
-and push the code to the GitHub repository so that both partners have access to
-it later.  Outside of the classroom when you are not working concurrently, you
-will mostly collaborate through GitHub.  Push frequently and also pull
-frequently from your GitHub repository whenever you are done finishing a method
-to merge changes as you go along.  Please communicate frequently and help each
-other out!
+I expect each group member to experience CI/CD pipelines.  I created
+individual repositories for each of you, so please work on your own
+repositories to implement the pipelines.  After both of you are done,
+compare the YAML files that each of you wrote.  Discuss, resolve any
+differences, and submit the GitHub repository of your choice.
 
 # Resources
-
-These links are the same ones posted at the end of the slides:
-
-* JUnit User Manual:  
-https://junit.org/junit4/
-
-* JUnit Reference Javadoc:  
-http://junit.sourceforge.net/javadoc/  
-For looking up methods only, not a user guide.
-
-* Mockito User Manual:  
-https://javadoc.io/static/org.mockito/mockito-core/3.2.4/org/mockito/Mockito.html  
-Most useful is the sections about verification and stubbing.
-
-* Jacoco User Manual:  
-https://www.jacoco.org/userdoc/index.html
