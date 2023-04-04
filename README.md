@@ -70,7 +70,7 @@ for testing and deployment.
 
 ## Part 1: CI/CD Pipelines
 
-**GitHub Classroom Link:** TBD
+**GitHub Classroom Link:** https://classroom.github.com/a/C7iqbXqL
 
 In Part 1, you will learn how to create a pipeline from scratch based on the
 Rent-A-Cat application for Exercise 2, using the CI/CD support provided by
@@ -703,10 +703,13 @@ the pom.xml file and add the below text after the \<scm\>...\</scm\> element:
     <repository>
       <id>github</id>
       <name>GitHub Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/CS1632/supplementary-exercise-4-ci-cd-pipelines-wonsunahn</url>
+      <url>https://maven.pkg.github.com/CS1632/supplementary-exercise-4-ci-cd-junit-wonsunahn</url>
     </repository>
   </distributionManagement>
 ```
+
+Replace the repository name in the \<url\>...\</url\> element with your own
+repository name.
 
 You also need to find the artifactId and append your PittID to it so that it
 becomes unique.  If your PittID has a capital letter please convert it to
@@ -717,9 +720,6 @@ to:
 ```
 <artifactId>cs1632-cicd-junit-wahn</artifactId>
 ```
-
-Replace the repository name in the \<url\>...\</url\> element with your own
-repository name.
 
 Now we are ready to create a new release to see if this works!  Go to the
 "<> Code" tab on your GItHub repository and then click on the "Create a new
@@ -852,7 +852,7 @@ parallel.
 
 ## Part 2: Dockers
 
-**GitHub Classroom Link:** TBD
+**GitHub Classroom Link:** https://classroom.github.com/a/Gbc_tYpY
 
 In Part 2, we will use Docker to test and deploy the Rent-A-Cat website that
 we tested in Deliverable 3.  We will test the website using the Selenium
