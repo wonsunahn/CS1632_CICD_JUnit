@@ -753,7 +753,7 @@ This time, let's try adding a 3rd party CI test to the maven-ci.yml
 workflow.  SonarQube is a widely used static testing tool Navigate to
 [https://sonarcloud.io](https://sonarcloud.io) and login using your GitHub
 account.  If this is your first time using SonarCloud, GitHub will ask you
-to uuthorize SonarCloud.  Click on the "Authorize SonarCloud" button.
+to authorize SonarCloud.  Click on the "Authorize SonarCloud" button.
 
 Once you are logged in, click on the "My Projects" tab.  And then click on
 "Analyze new project":
