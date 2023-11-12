@@ -242,7 +242,7 @@ jobs:
 
     # https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload jacoco results as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Jacoco coverage results
         path: target/site/jacoco
@@ -259,7 +259,7 @@ jobs:
 
     # https://github.com/marketplace/actions/maven-dependency-tree-dependency-submission
     - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@v2
+      uses: advanced-security/maven-dependency-submission-action@v3
 
 ```
 
