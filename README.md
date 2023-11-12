@@ -681,9 +681,8 @@ jobs:
 
 Create a new workflow file maven-publish.yml using the above text in exactly
 the same way you created maven-ci.yml previously.  Note that this workflow
-is now triggered when a new release is created.  It uses the ${{
-github.token }} to authenticate and publish the package.  The GitHub
-pre-defined variable ${{ github.token }} is automatically generated on each
+is now triggered when a new release is created.  It uses the \$ \{\{ github.token \}\} to authenticate and publish the package.  The GitHub
+pre-defined variable \$ \{\{ github.token \}\} is automatically generated on each
 workflow run and is given the permissions specified in the "permissions:"
 entry.
 
