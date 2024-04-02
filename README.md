@@ -590,38 +590,10 @@ workflow:
 
 <img alt="Pull request checks have all passed" src=img/pull_request_checks.png>
 
-You will see similar on all three pull requests.  Since Maven CI has
+You will see similar on the other pull request.  Since Maven CI has
 verified that the updated package dependencies did not break our build, we
 can safely press the "Merge pull request" to merge the branch into our main
-trunk.  The third pull request may ask you to "Resolve conflicts".  This
-happened because previous merges caused a conflict with the current merge.
-View the merged file and locate where the conflict occurred.  This would be
-how it looks like:
-
-```
-...
-<<<<<<< dependabot/maven/org.apache.maven.plugins-maven-javadoc-plugin-3.4.1
-    <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
-    <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
-=======
-    <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
-    <maven-javadoc-plugin.version>3.0.0</maven-javadoc-plugin.version>
->>>>>>> main
-...
-```
-
-Manually merge the above lines into these lines:
-
-```
-    <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
-    <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
-```
-
-Then click on "Mark as resolved", which will display o "Commit merge" button
-that you can click.  There might be a message saying something like "the
-page is out of date".  You can ignore that message and continue and click on
-"Merge pull request".  After all is said and done, you should see three
-closed pull requests:
+trunk.  After all is said and done, you should see two closed pull requests:
 
 <img alt="Pull request checks are all closed" src=img/pull_requests_closed.png>
 
@@ -694,7 +666,7 @@ the pom.xml file and add the below text after the \<scm\>...\</scm\> element:
     <repository>
       <id>github</id>
       <name>GitHub Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/CS1632/supplementary-exercise-4-ci-cd-pipelines-wonsunahn</url>
+      <url>https://maven.pkg.github.com/CS1632-Spring2024/supplementary-exercise-4-ci-cd-pipelines-wonsunahn</url>
     </repository>
   </distributionManagement>
 ```
