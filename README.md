@@ -723,6 +723,18 @@ Once you are logged in, click on the "My Projects" tab.  And then click on
 
 <img alt="Analyze new project" src=img/sonarcloud_1.png>
 
+Then search for your GitHub repository by first selecting the
+"CS1632-Spring2024" organization from the Organization dropdown bar, and then
+typing your GitHub ID in the search box as shown below.
+
+<img alt="Search for your GitHub project" src=img/sonarcloud_search.png>
+
+By default, only your Supplementary Exercise 4 GitHub repository should be
+checked (as that is the only public repository and the free edition of
+SonarCloud only allows public repositories to be checked).  If it is not
+checked, then check that repository.  Then, click on the "Set Up" button shown
+above.
+
 Then click on the "Import an organization from GitHub" button.  Then click
 on the "CS1632" organization.  Then select "All repositories" and click on
 the "Install" button.  Then find your repository and add it to the list of
