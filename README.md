@@ -735,13 +735,6 @@ SonarCloud only allows public repositories to be checked).  If it is not
 checked, then check that repository.  Then, click on the "Set Up" button shown
 above.
 
-Then click on the "Import an organization from GitHub" button.  Then click
-on the "CS1632" organization.  Then select "All repositories" and click on
-the "Install" button.  Then find your repository and add it to the list of
-repositories to monitor by clicking on the "Set Up" button:
-
-<img alt="Set up project" src=img/sonarcloud_setup.png>
-
 This will take you to the project set up page where you are asked to choose
 an analysis method.  Click on the "With GitHub Actions" link:
 
