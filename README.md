@@ -229,10 +229,10 @@ jobs:
 
     # This invokes the Setup Java JDK GitHub action:
     # https://github.com/marketplace/actions/setup-java-jdk
-    - name: Set up JDK 17
+    - name: Set up JDK 11
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '11'
         distribution: 'zulu'
         cache: maven
 
@@ -385,10 +385,10 @@ part of the maven-ci.yml file:
 ```
     # This invokes the Setup Java JDK GitHub action:
     # https://github.com/marketplace/actions/setup-java-jdk
-    - name: Set up JDK 17 
+    - name: Set up JDK 11
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '11'
         distribution: 'zulu'
         cache: maven
 ```
@@ -397,12 +397,12 @@ Note the entry "cache: maven".  To find out what it does, you can read the
 following section on the Setup Java JDK action page:
 https://github.com/marketplace/actions/setup-java-jdk#caching-packages-dependencies
 
-Essentially, it caches all Maven package dependencies for JDK 17 and
+Essentially, it caches all Maven package dependencies for JDK 11 and
 associates all those files with the key "setup-java-${{ platform }}-${{
 packageManager }}-${{ fileHash }}", where the fileHash is the hash of the
 pom.xml file.  It makes sense to associate the files with the hash of
 pom.xml since the package files would not change unless pom.xml changes.  We
-are caching those files so that the next time a job needs to install JDK 17,
+are caching those files so that the next time a job needs to install JDK 11,
 it can just restore the files from the cache.  Try manually running the
 "Maven CI" workflow and you can confirm that is indeed what happens:
 
@@ -634,10 +634,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up JDK 17
+    - name: Set up JDK 11
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '11'
         distribution: 'zulu'
         cache: maven
 
