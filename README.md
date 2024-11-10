@@ -12,12 +12,11 @@
     + [Add Maven Publish Workflow](#add-maven-publish-workflow)
     + [Adding SonarQube 3rd Party CI Test](#adding-sonarqube-3rd-party-ci-test)
 - [Submission](#submission)
-- [Groupwork Plan](#groupwork-plan)
 
 # CS 1632 - Software Quality Assurance
-Summer Semester 2024 - Supplementary Exercise 4
+Fall Semester 2024 - Supplementary Exercise 4
 
-* DUE: August 1 (Thursday), 2024 11:59 PM
+* DUE: November 22 (Friday), 2024 11:59 PM
 
 ## Description
 
@@ -666,14 +665,14 @@ the pom.xml file and add the below text after the \<scm\>...\</scm\> element:
     <repository>
       <id>github</id>
       <name>GitHub Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/CS1632-Summer2024/supplementary-exercise-4-ci-cd-pipelines-wonsunahn</url>
+      <url>https://maven.pkg.github.com/CS1632-Fall2024/supplementary-exercise-4-ci-cd-pipelines-wonsunahn</url>
     </repository>
   </distributionManagement>
 ```
 
 Replace the repository name within the \<url\>...\</url\> element with your own
 repository name.  Please make sure you leave the
-https://maven.pkg.github.com/CS1632-Summer2024/ part as-is and only change the
+https://maven.pkg.github.com/CS1632-Fall2024/ part as-is and only change the
 repository name, as https://maven.pkg.github.com/ is the base URL for the
 BitHub Maven package registry.
 
@@ -727,7 +726,7 @@ Once you are logged in, click on the "My Projects" tab.  And then click on
 <img alt="Analyze new project" src=img/sonarcloud_1.png>
 
 Then search for your GitHub repository by first selecting the
-"CS1632-Summer2024" organization from the Organization dropdown bar, and then
+"CS1632-Fall2024" organization from the Organization dropdown bar, and then
 typing your GitHub ID in the search box as shown below.
 
 <img alt="Search for your GitHub project" src=img/sonarcloud_search.png>
@@ -802,9 +801,3 @@ whether you were able to complete a task and reflections.  If you were not able
 to complete a task, please mark "No".  For the tasks that you said "No", I
 expect you to explain the issue that prevented you from fulfilling the task on
 the reflections questions at the end of Part 1 and Part 2.
-
-# Groupwork Plan
-
-I expect each group member to experience CI/CD pipelines.  I created
-individual repositories for each of you, so please work on your own
-repositories to implement the pipelines.  
