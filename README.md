@@ -10,6 +10,7 @@
       - [Job Permissions](#job-permissions)
     + [Enable Dependabot](#enable-dependabot)
     + [Add Maven Publish Workflow](#add-maven-publish-workflow)
+    + [Deploy Maven package and use in your Maven project](#deploy-maven-package-and-use-in-your-maven-project)
     + [Adding SonarQube 3rd Party CI Test](#adding-sonarqube-3rd-party-ci-test)
 - [Submission](#submission)
 
@@ -711,6 +712,94 @@ If you click on the package on the bottom right, you should see the contents
 of your newly published package:
 
 <img alt="Package details" src=img/create_new_release_5.png>
+
+
+### Deploy Maven package and use in your Maven project
+
+Let's try using the published Maven package by adding it as a dependency in a
+Maven project as directed in the package page.  But before you are able to do
+that, you need to add a **settings.xml** file that tells Maven that the GitHub
+Maven package repository is one of the allowed repositories.  You need to place
+the settings.xml file under the **.m2** folder under your home directory, which
+is where Maven stores all its cached packages it downloads from Maven Central.
+The .m2 folder is typically located in the following location.
+
+If you are using Windows:
+
+```
+C:\Users\<YOUR_USER_NAME>\.m2
+```
+
+If you are using Mac:
+
+```
+/Users/<YOUR_USER_NAME>/.m2
+```
+
+Under the above folder add the settings.xml file with the following content:
+
+
+```
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <activeProfiles>
+    <activeProfile>github</activeProfile>
+  </activeProfiles>
+
+  <profiles>
+    <profile>
+      <id>github</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+          <id>github</id>
+          <url>https://maven.pkg.github.com/CS1632-Fall2024/*</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <servers>
+    <server>
+      <id>github</id>
+      <username>USERNAME</username>
+      <password>TOKEN</password>
+    </server>
+  </servers>
+</settings>
+```
+
+Please replace USERNAME with your GitHub user name and replace TOKEN with a
+Personal Access Token (PAT).  If you don't have a PAT (likely), you will need
+to create one.  To generate a new token, on GitHub.com, go to Account >
+Settings > Developer Settings > Personal Access Tokens > Tokens (classic) and
+then click on the Generate New Token button and then the classic option.  Leave
+a Note to yourself to help you remember what this token is for.  Also click on
+the "repo" and "write:packages" checkboxes.  For the purposes of deploying the
+package, you only need "read:packages" permissions really, but we will use this
+token in Part 2 for other purposes too.  If you forgot the PAT string, you will
+have to generate the token by clicking on "Regenerate Token" button.
+
+After this you are ready to deploy the Maven package on a Maven project.  Let's
+try doing this on the Exercise 2 project from whence we copied the RentACat
+source code.  Open your Exercise 2 project on VSCode, and then copy the
+dependency text suggested on the package page of our published package and
+paste it within the Dependecies section.  Now, try deleting all the
+implementation code under the src/main/java/edu/pitt/cs folder.  You should not
+get any compilation errors since now all those classes are supplied by your
+package.  Then try clicking on the VSCode Testing extension and running all the
+tests.  All of them should pass!  Now, please do not commit the code since you
+probably still want your Exercise 2 source code.  You can discard the changes
+after you are satisfied.
 
 ### Adding SonarQube 3rd Party CI Test 
 
