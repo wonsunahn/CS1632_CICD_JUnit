@@ -574,8 +574,8 @@ After enabling all options, the settings page should look like this:
 <img alt="Dependabot settings before changing" src=img/settings_dependabot_after.png>
 
 As soon as you commit dependabot.yml, Dependabot will kick into action and
-within a few seconds creates three branches to patch up pom.xml to update
-some package versions, and three pull requests for those three branches:
+within a few seconds creates several branches to patch up pom.xml to update
+some package versions, and corresponding pull requests for those branches:
 
 <img alt="Pull requests created by Dependabot" src=img/pull_requests.png>
 
