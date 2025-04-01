@@ -17,7 +17,7 @@
 # CS 1632 - Software Quality Assurance
 Spring Semester 2025 - Supplementary Exercise 4
 
-* DUE: April 15 (Tuesday), 2025 before start of class
+* DUE: April 11 (Friday), 2025 11:59 PM
 
 ## Description
 
@@ -242,7 +242,7 @@ jobs:
 
     # https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload jacoco results as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Jacoco coverage results
         path: target/site/jacoco
