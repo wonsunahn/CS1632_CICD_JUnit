@@ -11,13 +11,12 @@
     + [Enable Dependabot](#enable-dependabot)
     + [Add Maven Publish Workflow](#add-maven-publish-workflow)
     + [Deploy Maven package and use in your Maven project](#deploy-maven-package-and-use-in-your-maven-project)
-    + [Adding SonarQube 3rd Party CI Test](#adding-sonarqube-3rd-party-ci-test)
 - [Submission](#submission)
 
 # CS 1632 - Software Quality Assurance
-Spring Semester 2025 - Supplementary Exercise 4
+Summer Semester 2025 - Supplementary Exercise 4
 
-* DUE: April 11 (Friday), 2025 11:59 PM
+* DUE: August 5 (Tuesday), 2025 8:30 AM
 
 ## Description
 
@@ -666,14 +665,14 @@ the pom.xml file and add the below text after the \<scm\>...\</scm\> element:
     <repository>
       <id>github</id>
       <name>GitHub Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/CS1632-Spring-2025/supplementary-exercise-4-ci-cd-pipelines-wonsunahn</url>
+      <url>https://maven.pkg.github.com/CS1632-Summer2025/supplementary-exercise-4-ci-cd-pipelines-wonsunahn</url>
     </repository>
   </distributionManagement>
 ```
 
 Replace the repository name within the \<url\>...\</url\> element with your own
 repository name.  Please make sure you leave the
-https://maven.pkg.github.com/CS1632-Spring-2025/ part as-is and only change the
+https://maven.pkg.github.com/CS1632-Summer2025/ part as-is and only change the
 repository name, as https://maven.pkg.github.com/ is the base URL for the
 BitHub Maven package registry.
 
@@ -759,7 +758,7 @@ Under the above folder add the settings.xml file with the following content:
         </repository>
         <repository>
           <id>github</id>
-          <url>https://maven.pkg.github.com/CS1632-Spring-2025/*</url>
+          <url>https://maven.pkg.github.com/CS1632-Summer2025/*</url>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
@@ -800,87 +799,6 @@ package.  Then try clicking on the VSCode Testing extension and running all the
 tests.  All of them should pass!  Now, please do not commit the code since you
 probably still want your Exercise 2 source code.  You can discard the changes
 after you are satisfied.
-
-### Adding SonarQube 3rd Party CI Test 
-
-This time, let's try adding a 3rd party CI test to the maven-ci.yml
-workflow.  SonarQube is a widely used static testing tool Navigate to
-[https://sonarcloud.io](https://sonarcloud.io) and login using your GitHub
-account.  If this is your first time using SonarCloud, GitHub will ask you
-to authorize SonarCloud.  Click on the "Authorize SonarCloud" button.
-
-Once you are logged in, click on the "My Projects" tab.  And then click on
-"Analyze new project":
-
-<img alt="Analyze new project" src=img/sonarcloud_1.png>
-
-Then search for your GitHub repository by first selecting the
-"CS1632-Spring-2025" organization from the Organization dropdown bar, and then
-typing your GitHub ID in the search box as shown below.
-
-<img alt="Search for your GitHub project" src=img/sonarcloud_search.png>
-
-By default, only your Supplementary Exercise 4 GitHub repository should be
-checked (as that is the only public repository and the free edition of
-SonarCloud only allows public repositories to be checked).  If it is not
-checked, then check that repository.  Then, click on the "Set Up" button shown
-above.
-
-This will take you to the project set up page where you are asked to choose
-an analysis method.  Click on the "With GitHub Actions" link:
-
-<img alt="Configure with GitHub Actions" src=img/sonarcloud_choose_method.png>
-
-
-Choose Maven for your build framework and follow the instructions that are
-displayed.  A few things you need to look out for while following the
-instructions.
-
-1. Please do add the SONAR_TOKEN that SonarCloud has generated for your project
-to GitHub secrets as instructed to allow your workflow to authenticate against
-SonarCloud.
-
-1. When you modify the pom.xml file with additional properties for
-SonarCould, note that there already is a properties section so don't add a
-new section.  Just add the additional properties to the existing section.
-
-1. It is going to ask you add a new build.yml file to your workflows.  We
-want this job to run as part of our maven-ci.yml CI test, so instead of
-creating a new file, just add the "build" job to the end of the jobs list in
-maven-ci.yml.  
-
-1. In the "build" job in maven-ci.yml that you just added, make the following
-changes.  Replace the checkout action with the cache action like we did for the
-"update_dependency_graph" job:
-
-   ```
-   - name: Restore cached build
-     uses: actions/cache@v3
-     with:
-       key: cached-build-${{github.sha}}
-       path: .
-   ```
-
-   Also order the "build" job after the "maven_test" job so that the cache is
-available by the time it runs:
-
-   ```
-   needs: [maven_test]  # Enforces that maven_test runs first
-   ```
-
-Once you commit and push the above file changes, this will trigger a new
-Maven CI run:
-
- <img alt="Maven CI with SonarQube" src=img/sonarcloud_6.png>
-
-Note how both the "update_dependence_graph" job and "sonarqube_test" jobs
-are dependent open the "maven_test" job (because maven_test generates the
-build cache which is needed by both jobs).  But these two jobs can run in
-parallel.
-
-Now head over to SonarCloud and view the report generated by the run:
-
-<img alt="SonarQube report" src=img/sonarcloud_7.png>
 
 # Submission
 
