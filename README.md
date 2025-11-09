@@ -14,9 +14,9 @@
 - [Submission](#submission)
 
 # CS 1632 - Software Quality Assurance
-Summer Semester 2025 - Supplementary Exercise 4
+Fall Semester 2025 - Supplementary Exercise 4
 
-* DUE: August 5 (Tuesday), 2025 8:30 AM
+* DUE: November 19 (Wednesday), 2025 before start of class
 
 ## Description
 
@@ -61,7 +61,7 @@ for testing and deployment.
 
 ## Part 1: CI/CD Pipelines
 
-**GitHub Classroom Link:** TBD
+**GitHub Classroom Link:** https://classroom.github.com/a/eh3dTzWJ
 
 In Part 1, you will learn how to create a pipeline from scratch based on the
 Rent-A-Cat application for Exercise 2, using the CI/CD support provided by
@@ -665,14 +665,14 @@ the pom.xml file and add the below text after the \<scm\>...\</scm\> element:
     <repository>
       <id>github</id>
       <name>GitHub Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/CS1632-Summer2025/supplementary-exercise-4-ci-cd-pipelines-wonsunahn</url>
+      <url>https://maven.pkg.github.com/CS1632-Fall2025/supplementary-exercise-4-ci-cd-pipelines-wonsunahn</url>
     </repository>
   </distributionManagement>
 ```
 
 Replace the repository name within the \<url\>...\</url\> element with your own
 repository name.  Please make sure you leave the
-https://maven.pkg.github.com/CS1632-Summer2025/ part as-is and only change the
+https://maven.pkg.github.com/CS1632-Fall2025/ part as-is and only change the
 repository name, as https://maven.pkg.github.com/ is the base URL for the
 BitHub Maven package registry.
 
@@ -758,7 +758,7 @@ Under the above folder add the settings.xml file with the following content:
         </repository>
         <repository>
           <id>github</id>
-          <url>https://maven.pkg.github.com/CS1632-Summer2025/*</url>
+          <url>https://maven.pkg.github.com/CS1632-Fall2025/*</url>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
