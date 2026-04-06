@@ -14,9 +14,9 @@
 - [Submission](#submission)
 
 # CS 1632 - Software Quality Assurance
-Fall Semester 2025 - Supplementary Exercise 4
+Spring Semester 2026 - Supplementary Exercise 4
 
-* DUE: November 19 (Wednesday), 2025 before start of class
+* DUE: April 21 (Tuesday), 2026 before start of class
 
 ## Description
 
@@ -361,13 +361,14 @@ the previous checkout action?
 ```
 
 Besides, weren't we able to successfully run "mvn test" because there was a
-pom.xml file present?  The answer is again, you need to remember that these
-are two different jobs which run on different Docker containers.  The
-"update_dependence_graph" job builds a new container from scratch based on
-the ubuntu-latest image, and hence will not have the pom.xml file.  One way
-to solve this issue is to checkout the repository again within this job as
-well, but that feels like a waste of work since we are repeating the same
-work over again.  A better solution is to use GitHub caches.
+pom.xml file present?  The answer is again, you need to remember that these are
+two different jobs which run on different Docker containers.  The
+"update_dependence_graph" job builds a new container from scratch based on the
+ubuntu-latest image, and hence will not have the pom.xml file.  One way to
+solve this issue is to checkout the repository again within this job as well,
+and that is a perfectly valid solution.  An alternative solution is to pass on
+the checked out repository via shared storage between jobs called GitHub
+Caches.
 
 #### GitHub Caches
 
@@ -665,14 +666,14 @@ the pom.xml file and add the below text after the \<scm\>...\</scm\> element:
     <repository>
       <id>github</id>
       <name>GitHub Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/CS1632-Fall2025/supplementary-exercise-4-ci-cd-pipelines-wonsunahn</url>
+      <url>https://maven.pkg.github.com/CS1632-Spring2026/supplementary-exercise-4-ci-cd-pipelines-wonsunahn</url>
     </repository>
   </distributionManagement>
 ```
 
 Replace the repository name within the \<url\>...\</url\> element with your own
 repository name.  Please make sure you leave the
-https://maven.pkg.github.com/CS1632-Fall2025/ part as-is and only change the
+https://maven.pkg.github.com/CS1632-Spring2026/ part as-is and only change the
 repository name, as https://maven.pkg.github.com/ is the base URL for the
 BitHub Maven package registry.
 
@@ -758,7 +759,7 @@ Under the above folder add the settings.xml file with the following content:
         </repository>
         <repository>
           <id>github</id>
-          <url>https://maven.pkg.github.com/CS1632-Fall2025/*</url>
+          <url>https://maven.pkg.github.com/CS1632-Spring2026/*</url>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
