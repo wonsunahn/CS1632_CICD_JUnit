@@ -292,43 +292,43 @@ Going forward, any push or creation of a pull request will trigger this
 workflow.  A pull request is a request to merge a branch into the main trunk
 of the repository and is in that sense also a code integration event.
 
-### Debug Maven CI Workflow maven_test job
+### View Results of Maven CI Workflow maven_test job
 
 Now let's click on the failed run link and see exactly which job(s) failed:
 
-<img alt="Maven CI workflow run" src=img/maven_ci_workflow_2.png>
+<img alt="Maven CI workflow first run" src=img/maven_ci_workflow_6.png>
 
-It looks like both of our jobs failed!  Let's first look at the "maven_test"
-job by clicking on it:
+You can see that the "maven_test" job passed, but the "update_dependence_graph"
+job failed.  We will get to failed job soon, but we should be able to view the
+results of the maven_test job since it passed.  So what are the results?  By
+default jobs do not publish any results beyond the green check mark that
+indicates that the job passed.  So what does it mean for a job to have passed?
+It means that every step in the job completely successfully including the "mvn
+test" step.  If "mvn test" suffered a failure, it would have returned a
+none-zero [exit code](https://en.wikipedia.org/wiki/Exit_status)(like all Linux
+processes do), which is detected by the workflow.  So you can be confident that
+all your JUnit tests passed.
 
-<img alt="Maven CI workflow maven_test" src=img/maven_ci_workflow_3.png>
+If a job wants to publish results beyond the green check mark, then it needs to
+create what is called an **artifact**.  You can see in the above maven-ci.yml
+file that the job has a step to create an artifact out of the
+"target/site/jacoco" path that contains Jacoco code coverage analysis results.
+The artifact is available at the bottom of the workflow Summary page you are on
+if you scroll down:
 
-And then let's expand the failing "Test with Maven" step and scroll to the
-end to see what the failure was:
+<img alt="Maven CI workflow artifact" src=img/maven_ci_artifact.png>
 
-<img alt="Maven CI workflow maven_test failure" src=img/maven_ci_workflow_4.png>
-
-You can see that the "mvn test" command failed because of a code coverage
-error from the Jacoco plugin.  This is the same code coverage error we
-suffered in Exercise 2 at the beginning, if you remember.  To solve this
-issue, copy over the "src" directory from your completed Exercise 2 and
-overwrite the existing "src" directory.  Then commit and push your changes.
-This will automatically trigger another CI run:
-
-<img alt="Maven CI workflow second run" src=img/maven_ci_workflow_5.png>
-
-The workflow failed again so let's click on the run to take a look:
-
-<img alt="Maven CI workflow second run" src=img/maven_ci_workflow_6.png>
-
-This time, the "maven_test" job passed, yay!  That means our code passed all
-our JUnit tests with at least 20\% coverage.  
+Click on the "Jacoco coverage results" link and that would download a zip file
+that contains the artifact.  See if you can decompress it and view the code
+coverage results.  Don't be surprised if you see zero coverage because this is
+just the scaffolding code from Exercise 2.  If you replace it with real tests,
+you will see actual coverage.
 
 ### Debug Maven CI Workflow update_dependence_graph job
 
 Now time to look at the still failing "update_dependence_graph" job:
 
-<img alt="Maven CI workflow second run" src=img/maven_ci_workflow_7.png>
+<img alt="Maven CI workflow first run" src=img/maven_ci_workflow_7.png>
 
 Note the phrase "Goal requires a project to execute but there is no POM in
 this directory".  The depgraph Maven plugin needs the pom.xml file to
