@@ -292,7 +292,7 @@ Going forward, any push or creation of a pull request will trigger this
 workflow.  A pull request is a request to merge a branch into the main trunk
 of the repository and is in that sense also a code integration event.
 
-### View Results of Maven CI Workflow maven_test job
+### View results of Maven CI Workflow maven_test job
 
 Now let's click on the failed run link and see exactly which job(s) failed:
 
@@ -604,6 +604,52 @@ Dependabot was instrumental in mitigating the damage due to the recent Log4j
 vulnerability by [alerting thousands of repositories and creating thousands
 of pull
 requests](https://github.blog/2021-12-14-using-githubs-security-features-identify-log4j-exposure-codebase/).
+
+### Add CodeQL TaaS Workflow
+
+In the software industry, there are a number of companies that provide TaaS
+(Testing-as-a-Service), a type of SaaS (Software-as-a-Service).  These services
+typically perform static testing and code analysis which can be performed
+without knowing the requirements of your software.  These services are easily
+integrated into your CI/CD pipeline through the GitHub Workflow Marketplace.
+We are going to practice integrating a code quality and security analysis tool
+called CodeQL.
+
+On your GitHub repository page:
+
+1. Navigate to "Settings > Advanced Security".
+
+1. Click on the "Explore workflows" button next to the Code Security > Tools >
+Other tools setting.
+
+1. The first workflow that pops up would be "CodeQL Analysis" by GitHub.  If it
+is not, simply search for it.  Click on the "Configure" button for that
+workflow.
+
+1. In the .github/workflows/codeql.yml file generated, uncomment the following line:
+
+   ```
+   queries: security-extended,security-and-quality
+   ```
+
+   For a little bit of background, CodeQL is a code analysis engine developed
+by GitHub (originally by Semmle, which was later acquired by GitHub). It treats
+code as data in a database, upon which you can perform queries in a domain
+specific language called CodeQL similar to SQL to find bugs and security
+vulnerabilities.  By default, the workflow does not perform any queries, so the
+above line has to be uncommented to perform a basic set of queries about
+security and code quality.
+
+1. Now click on "Commit changes".  This will trigger a new workflow due to the
+push trigger on the YAML file.
+
+When the workflow completes, navigate to "Security and quality > Code
+scanning".  You should see a bunch of issues like the below:
+
+<img alt="Results of code scanning" src=img/maven_ci_code_scanning.png>
+
+I am not going to ask you to resolve all those issues as part of this exercise.
+Just peruse each issue type and see what CodeQL is able to provide for you.
 
 ### Add Maven Publish Workflow
 
