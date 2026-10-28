@@ -8,10 +8,6 @@ public interface Cat {
 		switch (type) {
 			case IMPL:
 				return new CatImpl(id, name);
-			case BUGGY:
-				return new CatBuggy(id, name);
-			case SOLUTION:
-				return new CatSolution(id, name);
 			case MOCK:
 			    // TODO: Return a mock object that emulates the behavior of a real object.
 				return null;

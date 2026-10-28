@@ -8,10 +8,6 @@ public interface RentACat {
 		switch (type) {
 			case IMPL:
 				return new RentACatImpl();
-			case BUGGY:
-				return new RentACatBuggy();
-			case SOLUTION:
-				return new RentACatSolution();
 			case MOCK:
 				// TODO: Return a mock object that emulates the behavior of a real object.
 				return null;

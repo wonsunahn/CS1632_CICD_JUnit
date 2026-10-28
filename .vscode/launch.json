@@ -12,24 +12,9 @@
         },
         {
             "type": "java",
-            "name": "Launch RentACatBuggy",
-            "request": "launch",
-            "mainClass": "edu.pitt.cs.RentACatBuggy",
-            "projectName": "rentacat"
-        },
-        {
-            "type": "java",
             "name": "Launch RentACatImpl",
             "request": "launch",
-            "mainClass": "edu.pitt.cs.RentACatImpl",
-            "projectName": "rentacat"
-        },
-        {
-            "type": "java",
-            "name": "Launch TestRunner",
-            "request": "launch",
-            "mainClass": "edu.pitt.cs.TestRunner",
-            "projectName": "rentacat"
+            "mainClass": "edu.pitt.cs.RentACatImpl"
         }
     ]
 }

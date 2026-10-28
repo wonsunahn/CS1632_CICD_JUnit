@@ -32,7 +32,7 @@
   <scm>
     <connection>scm:git:git://github.com/wonsunahn/CS1632_CICD_JUnit.git</connection>
     <developerConnection>scm:git:ssh://github.com:wonsunahn/CS1632_CICD_JUnit.git</developerConnection>
-    <url>http://github.com/wonsunahn/CS1632_CICD_JUnit/tree/master</url>
+    <url>https://github.com/wonsunahn/CS1632_CICD_JUnit/tree/main</url>
   </scm>
 
   <properties>
@@ -57,14 +57,6 @@
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>edu.pitt.cs</groupId>
-      <artifactId>rentacat-solution</artifactId>
-      <version>1.0.0</version>
-      <systemPath>${pom.basedir}/rentacat-solution-1.0.0.jar</systemPath>
-      <scope>system</scope>
     </dependency>
 
   </dependencies>
