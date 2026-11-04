@@ -41,6 +41,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
     <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
+    <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
   </properties>
 
   <dependencies>
@@ -80,6 +81,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
         <version>3.5.0</version>
+      </plugin>
+      <!-- Runs the JUnit tests in the test phase.  Pinned so that the test run does not
+           depend on the default version of whichever Maven runs the build. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
@@ -136,15 +144,19 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${maven-javadoc-plugin.version}</version>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.5.6</version>
-      </plugin>
+      <!-- report-only builds the HTML test report from the results of the test phase,
+           instead of running all the tests a second time. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>3.5.6</version>
+        <version>${maven-surefire-plugin.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report-only</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
